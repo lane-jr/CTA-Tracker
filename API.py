@@ -19,8 +19,29 @@ url = (
     "&outputType=JSON"
 )
 
-response = requests.get(url)
-print(response.status_code)
+try:
+    response = requests.get(url, timeout=10)
+    response.raise_for_status()
+
+    train_data = response.json()
+
+    arrivals = train_data["ctatt"]["eta"]
+
+    if not arrivals:
+        print("No upcoming trains")
+        exit()
+
+except requests.exceptions.RequestException:
+    print("Network/API error")
+    exit()
+
+except KeyError:
+    print("Unexpected API format")
+    exit()
+
+except Exception as e:
+    print(f"Unexpected error: {e}")
+    exit()
 
 train_data = response.json()
 
