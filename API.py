@@ -24,17 +24,19 @@ print(response.status_code)
 
 train_data = response.json()
 
-arrival_times = train_data["ctatt"]["eta"][0]
+for train in train_data["ctatt"]["eta"]:
 
-if arrival_times["isApp"] == "1":
-    print("Due")
+    if train["trDr"] == "5":
 
-else:
-    arr_time = datetime.fromisoformat(arrival_times["arrT"])
-    current_time = datetime.now(arr_time.tzinfo)
+        if train["isApp"] == "1":
+            print("arriving")
 
-    min = round(
-        (arr_time - current_time).total_seconds() / 60
-    )
-    
-    print(f"{min} min")
+        else:
+            arr_time = datetime.fromisoformat(train["arrT"])
+            current_time = datetime.now(arr_time.tzinfo)
+
+            minutes = round(
+                (arr_time - current_time).total_seconds() / 60
+            )
+
+            print(f"Train toward the Loop in {minutes} min")
